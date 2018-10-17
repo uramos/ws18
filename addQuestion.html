@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Galdera sortu</title>
+	
+	<style>
+		form {
+		margin: 0 auto;
+		width: 400px;
+		padding: 1em;
+		border: 1px solid #CCC;
+		border-radius: 1em;
+		}
+		
+        body {
+            background-color: coral;
+        }
+        label {
+            display: inline-block;
+            float: left;
+            clear: left;
+            width: 220px;
+            text-align: right;
+        }
+
+        input {
+            display: inline-block;
+            float: left;
+            text-align: left;
+        }
+		
+		botoia{
+		margin-left: .5em;
+		}
+    </style>
+	
+</head>
+
+<body>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script>
+
+ $(document).ready(function(){
+ 
+        $.postaZuzena = function(){
+            var balioa= $("#posta").val();
+            if (balioa.match((/^[a-zA-Z]{1,20}[0-9]{3}@ikasle\.ehu\.eus$/))){
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        $('#quizMaker').submit(function()  {
+            if (($("#posta").val()!=="")&& ($("#sarGaldera").val()!=="")&&($("#sarZuzena").val()!=="")&&($("#sarOkerra1").val()!=="")
+                &&($("#sarOkerra2").val()!=="")&&($("#sarOkerra3").val()!=="")&&($("#galderaZail").val()!=="") &&($("#galderaGai").val()!=="")){
+                if ($.postaZuzena()) {
+                    if ($("#galderaZail").val().match(/^[1-5]$/)){
+                        if ($("#sarGaldera").val().length>=10){
+                            return true;
+                        } else {
+                            alert("10 karaktere edo gehiagoko galdera egizu mesedez.");
+                            return false;
+                        }
+                    } else {
+                        alert("Zailtasunak zenbaki osoa izan behar du eta 1-5 artekoa.");
+                        return false;
+                    }
+                } else{
+                    alert("Sartutako postak ez ditu baldintzak betetzen.");
+                    return false;
+                }
+            } else {
+                alert("Bete beharreko guztia bete mesedez.");
+                return false;
+            }
+        })
+    })
+</script>
+	
+<form  id="quizMaker" name="quizMaker"  action="php/addQuestion.php" method="post">
+	<fieldset>
+		<legend>Galdera sortu:</legend>
+			<label for="posta">eMail(*):</label>
+			<input type="text" name="posta" id="posta" value="adibide000@ikasle.ehu.eus"/>
+			
+			<label for="sarGaldera">Egin nahi den galdera(*):</label>
+			<input type="text" name="sarGaldera"  class="sarrera" id="sarGaldera"/>
+			
+			<label for="sarZuzena">Erantzun zuzena(*):</label>
+			<input type="text" name="sarZuzena" class="sarrera" id="sarZuzena"/>
+			<label for="sarOkerra1">Erantzun okerra1(*):</label>
+			<input type="text" name="sarOkerra1" class="sarrera" id="sarOkerra1"/>
+			<label for="sarOkerra2">Erantzun okerra2(*):</label>
+			<input type="text" name="sarOkerra2" class="sarrera" id="sarOkerra2"/>
+			<label for="sarOkerra3">Erantzun okerra3(*):</label>
+			<input type="text" name="sarOkerra3" class="sarrera" id="sarOkerra3"/>
+
+			<label for="galderaZail">Galderaren zailtasuna maila(1-5)(*):</label>
+			<input type="galderaZail" name="zailtasuna" id="galderaZail"/>
+			<label for="galderaGai">Galderaren gai-arloa(*):</label>
+			<input type="text" name="galderaGai" id="galderaGai"/>
+			<label for="irudia">Argazkia:</label>
+			<input type="file" name="irudiaInp" id="irudiaInp">
+			
+			<label for="botoia"></label>
+			<input id="botoia" type="submit" value="Bidali" >
+			<input type="reset" value="Borratu" id="reset">
+	</fieldset>
+</form>
+	<a href="layout.html">
+		<input id="botoia" type="button" value="Atzera">
+	</a>
+</body>
+</html>
