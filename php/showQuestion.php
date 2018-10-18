@@ -1,30 +1,27 @@
 <?php 
-include 'dbConfig.php'
+include 'dbConfig.php';
 
-// Konexioa sortu
-$link = new mysqli($servername, $username, $password, $dbname);
-// Konexioa Egiaztatu (Ondo dagoen edo ez)
+$link = mysqli_connect($zerbitzaria, $erabiltzailea, $gakoa, $db);
+
 if ($link->connect_error) {
-    die("Connection failed: " . $link->connect_error);
+    die("Connection failed: " . $link1->connect_error);
 }
 
-$SQL_QUIZ = $link->query("select * from questions");
+$sql = ("select * from questions");
 
-$emaitza = $connection->query($SQL_QUIZ);
+$ema = mysqli_query($link,$sql);
 
-echo '<table border=1><tr><th> Id </th><th> Posta </th><th> Sarrera Galdera </th><th> Sarrera Zuzena </th><th> 
-Sarrera Okerra1 </th><th> Sarrera Okerra2 </th><th> Sarrera Okerra3 </th><th> Galdera Zailtasuna </th><th> Galdera Gaia </th></tr>';
+echo '<table border=1><tr><th> ID </th><th> EPOSTA </th><th> SARRERA GALDERA </th><th> SARRERA ZUZENA </th><th> 
+SARRERA OKERRA 1 </th><th> SARRERA OKERRA 2 </th><th> SARRERA OKERRA 3 </th><th> GALDERA ZAILTASUNA </th><th> GALDERA GAIA </th></tr>';
 
-if ($emaitza->num_rows > 0) {
-	while ($row = $emaitza->fetch_assoc()) {
-		echo '<tr><td>'.$row['ID'].'</td> <td>'. $row['PostaElektronikoa'].'</td><td>'.$row['Galdera'].'</td>
-		<td>'.$row['ErantzunZuzena'].'</td><td>'.$row['ErantzunOkerra1'].'</td><td>'.$row['ErantzunOkerra2'].'</td>
-		<td>'.$row['ErantzunOkerra3'].'</td><td>'.$row['GalderaZailtasuna'].'</td><td>'.$row['GalderaArloa'].'</td></tr>';
+	while ($row = mysqli_fetch_array($ema,MYSQLI_ASSOC)) {
+		echo '<tr><td>' . $row['Id'] . '</td> <td>' . $row['eMail'].'</td><td>'. $row['sarGaldera']. '</td>
+		<td>' . $row['sarZuzena'] . '</td><td>' . $row['sarOkerra1'] . '</td><td>' . $row['sarOkerra2'] . '</td>
+		<td>'. $row['sarOkerra3'] . '</td><td>' . $row['galderaZail'] . '</td><td>' . $row['galderaGai'] . '</td></tr>';
 	}
-} else {
-	echo "Errorea: Ez dira galderak aurkitu!";	
-}
-
-$connection->close();
+echo '</table>';
+mysqli_free_result($ema);
+echo "Atzera bueltatu. " . "<a href=\"javascript:history.go(-1)\">ATZERA</a><br>";
+mysqli_close($link);
 
 ?> 

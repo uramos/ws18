@@ -12,6 +12,6 @@ if ($lokal){
    $zerbitzaria="localhost";
    $erabiltzailea="id7195700_urafe";
    $gakoa="contraseña";  // GitHub-en eremu hau EZABATU
-   $db="id7195700_quiz";        // hodeiko db izena: hodeiko aurrizkia + zuek adierazitako db izena atzizki moduan
+   $db="id7195700_quiz"; // hodeiko db izena: hodeiko aurrizkia + zuek adierazitako db izena atzizki moduan
 } 
 ?>
