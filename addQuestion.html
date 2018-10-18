@@ -3,11 +3,11 @@
 <head>
     <meta charset="utf-8">
     <title>Galdera sortu</title>
-	
+
 	<style>
 		form {
 		margin: 0 auto;
-		width: 400px;
+		width: 600px;
 		padding: 1em;
 		border: 1px solid #CCC;
 		border-radius: 1em;
@@ -31,7 +31,7 @@
         }
 		
 		botoia{
-		margin-left: .5em;
+			margin-left: 1em;
 		}
     </style>
 	
@@ -46,7 +46,7 @@
  
         $.postaZuzena = function(){
             var balioa= $("#posta").val();
-            if (balioa.match((/^[a-zA-Z]{1,20}[0-9]{3}@ikasle\.ehu\.eus$/))){
+            if (balioa.match((/^[a-zA-Z]{3,20}[0-9]{3}@ikasle\.ehu\.eus$/))){
                 return true;
             } else {
                 return false;
@@ -88,7 +88,6 @@
 			
 			<label for="sarGaldera">Egin nahi den galdera(*):</label>
 			<input type="text" name="sarGaldera"  class="sarrera" id="sarGaldera"/>
-			
 			<label for="sarZuzena">Erantzun zuzena(*):</label>
 			<input type="text" name="sarZuzena" class="sarrera" id="sarZuzena"/>
 			<label for="sarOkerra1">Erantzun okerra1(*):</label>
@@ -99,15 +98,18 @@
 			<input type="text" name="sarOkerra3" class="sarrera" id="sarOkerra3"/>
 
 			<label for="galderaZail">Galderaren zailtasuna maila(1-5)(*):</label>
-			<input type="galderaZail" name="zailtasuna" id="galderaZail"/>
+			<input type="galderaZail" name="galderaZail" id="galderaZail"/>
 			<label for="galderaGai">Galderaren gai-arloa(*):</label>
 			<input type="text" name="galderaGai" id="galderaGai"/>
 			<label for="irudia">Argazkia:</label>
 			<input type="file" name="irudiaInp" id="irudiaInp">
-			
+
+			<a href="galdDBra.html">
 			<label for="botoia"></label>
 			<input id="botoia" type="submit" value="Bidali" >
+			
 			<input type="reset" value="Borratu" id="reset">
+			
 	</fieldset>
 </form>
 	<a href="layout.html">
