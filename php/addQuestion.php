@@ -10,7 +10,7 @@ $link= new mysqli($zerbitzaria, $erabiltzailea, $gakoa, $db);
 if($link->connect_errno) {
 	die( "Huts egin du konexioak MySQL-ra: (". $link-> connect_errno .") " .$link-> connect_error);
 }
-
+//Kontuz hemen,lokalean question, hodeian Question!!
 $sql = "INSERT INTO questions (eMail, sarGaldera, sarZuzena, sarOkerra1, sarOkerra2, sarOkerra3, galderaZail, galderaGai) 
 VALUES ('$_POST[posta]', '$_POST[sarGaldera]', '$_POST[sarZuzena]', '$_POST[sarOkerra1]', '$_POST[sarOkerra2]', '$_POST[sarOkerra3]', '$_POST[galderaZail]', '$_POST[galderaGai]')";
 
