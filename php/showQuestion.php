@@ -6,7 +6,7 @@ $link = mysqli_connect($zerbitzaria, $erabiltzailea, $gakoa, $db);
 if ($link->connect_error) {
     die("Connection failed: " . $link1->connect_error);
 }
-//Kontuz hemen,lokalean question, hodeian Question!!
+//Kontuz hemen,lokalean from question, hodeian Question!!
 $sql = ("select * from questions");
 
 $ema = mysqli_query($link,$sql);

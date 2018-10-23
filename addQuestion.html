@@ -4,37 +4,12 @@
     <meta charset="utf-8">
     <title>Galdera sortu</title>
 
-	<style>
-		form {
-		margin: 0 auto;
-		width: 600px;
-		padding: 1em;
-		border: 1px solid #CCC;
-		border-radius: 1em;
-		}
-		
-        body {
-            background-color: coral;
-        }
-        label {
-            display: inline-block;
-            float: left;
-            clear: left;
-            width: 220px;
-            text-align: right;
-        }
-
-        input {
-            display: inline-block;
-            float: left;
-            text-align: left;
-        }
-		
-		botoia{
-			margin-left: 1em;
-		}
-    </style>
-	
+	<link rel="stylesheet" type="text/css" href="styles/form.css" />
+	<link rel="stylesheet" type="text/css" href="styles/body.css" />
+	<link rel="stylesheet" type="text/css" href="styles/label.css" />
+	<link rel="stylesheet" type="text/css" href="styles/input.css" />
+	<link rel="stylesheet" type="text/css" href="styles/botoia.css" />
+	<link rel="stylesheet" type="text/css" href="styles/thumb.css" />
 </head>
 
 <body>
@@ -52,13 +27,22 @@
                 return false;
             }
         }
+		
+		$.galderaOndo = function(){
+			var balioa = $(#sarGaldera).val();
+			if(balioa.match(/^[a-zA-Z]{10,50}$/)){
+				return true;
+			}else{
+				return false;
+			}
+		}
 
         $('#quizMaker').submit(function()  {
             if (($("#posta").val()!=="")&& ($("#sarGaldera").val()!=="")&&($("#sarZuzena").val()!=="")&&($("#sarOkerra1").val()!=="")
                 &&($("#sarOkerra2").val()!=="")&&($("#sarOkerra3").val()!=="")&&($("#galderaZail").val()!=="") &&($("#galderaGai").val()!=="")){
                 if ($.postaZuzena()) {
                     if ($("#galderaZail").val().match(/^[1-5]$/)){
-                        if ($("#sarGaldera").val().length>=10){
+                        if ($("$.galderaOndo"){
                             return true;
                         } else {
                             alert("10 karaktere edo gehiagoko galdera egizu mesedez.");
@@ -101,19 +85,47 @@
 			<input type="galderaZail" name="galderaZail" id="galderaZail"/>
 			<label for="galderaGai">Galderaren gai-arloa(*):</label>
 			<input type="text" name="galderaGai" id="galderaGai"/>
-			<label for="irudia">Argazkia:</label>
-			<input type="file" name="irudiaInp" id="irudiaInp">
+					
+			<input type="file" id="files" name="files[]" />
+			<br />
+			<output id="list"></output>
 
-			<a href="galdDBra.html">
 			<label for="botoia"></label>
 			<input id="botoia" type="submit" value="Bidali" >
-			
 			<input type="reset" value="Borratu" id="reset">
 			
 	</fieldset>
 </form>
 	<a href="layout.html">
 		<input id="botoia" type="button" value="Atzera">
-	</a>
+	</a> 	
+
+	<script>
+            function archivo(evt) {
+                var files = evt.target.files; // FileList object
+             
+                // Obtenemos la imagen del campo "file".
+                for (var i = 0, f; f = files[i]; i++) {
+					//Solo admitimos imágenes.
+                    if (!f.type.match('image.*')) {
+                        continue;
+                    }
+             
+                    var reader = new FileReader();
+             
+                    reader.onload = (function(theFile) {
+                        return function(e) {
+                          // Insertamos la imagen
+                         document.getElementById("list").innerHTML = ['<img class="thumb" src="', e.target.result,'" title="', escape(theFile.name), '"/>'].join('');
+                        };
+                    })(f);
+             
+                    reader.readAsDataURL(f);
+                }
+            }
+             
+            document.getElementById('files').addEventListener('change', archivo, false);
+			
+      </script>
 </body>
 </html>
