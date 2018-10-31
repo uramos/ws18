@@ -10,6 +10,7 @@
 	<link rel="stylesheet" type="text/css" href="styles/input.css" />
 	<link rel="stylesheet" type="text/css" href="styles/botoia.css" />
 	<link rel="stylesheet" type="text/css" href="styles/thumb.css" />
+	
 </head>
 
 <body>
@@ -28,26 +29,27 @@
             }
         }
 		
-		$.galderaOndo = function(){
-			var balioa = $(#sarGaldera).val();
-			if(balioa.match(/^[a-zA-Z]{10,50}$/)){
+		function galderaOndo(){
+			var balioa = $("#sarGaldera").val();
+			var balioaTrim = balioa.trim();
+			if(balioaTrim.length>10){
 				return true;
 			}else{
 				return false;
 			}
 		}
-
-        $('#quizMaker').submit(function()  {
+		
+        $('#quizMaker').submit(function() {
             if (($("#posta").val()!=="")&& ($("#sarGaldera").val()!=="")&&($("#sarZuzena").val()!=="")&&($("#sarOkerra1").val()!=="")
                 &&($("#sarOkerra2").val()!=="")&&($("#sarOkerra3").val()!=="")&&($("#galderaZail").val()!=="") &&($("#galderaGai").val()!=="")){
                 if ($.postaZuzena()) {
                     if ($("#galderaZail").val().match(/^[1-5]$/)){
-                        if ($("$.galderaOndo"){
-                            return true;
-                        } else {
-                            alert("10 karaktere edo gehiagoko galdera egizu mesedez.");
-                            return false;
-                        }
+						if(galderaOndo()){
+							return true;
+						}else{
+							alert("Galderak 10 karaktereko luzera izan behar du gutxienez.");
+							return false;
+						}
                     } else {
                         alert("Zailtasunak zenbaki osoa izan behar du eta 1-5 artekoa.");
                         return false;
@@ -64,14 +66,14 @@
     })
 </script>
 	
-<form  id="quizMaker" name="quizMaker"  action="php/addQuestion.php" method="post">
+<form enctype="multipart/form-data" id="quizMaker" name="quizMaker"  action="php/addQuestion.php" method="post">
 	<fieldset>
 		<legend>Galdera sortu:</legend>
 			<label for="posta">eMail(*):</label>
 			<input type="text" name="posta" id="posta" value="adibide000@ikasle.ehu.eus"/>
 			
 			<label for="sarGaldera">Egin nahi den galdera(*):</label>
-			<input type="text" name="sarGaldera"  class="sarrera" id="sarGaldera"/>
+			<input type="text" name="sarGaldera" pattern="[A-Za-z ,-?]{10,150}" class="sarrera" id="sarGaldera"/>
 			<label for="sarZuzena">Erantzun zuzena(*):</label>
 			<input type="text" name="sarZuzena" class="sarrera" id="sarZuzena"/>
 			<label for="sarOkerra1">Erantzun okerra1(*):</label>
@@ -85,24 +87,26 @@
 			<input type="galderaZail" name="galderaZail" id="galderaZail"/>
 			<label for="galderaGai">Galderaren gai-arloa(*):</label>
 			<input type="text" name="galderaGai" id="galderaGai"/>
+			
 					
-			<input type="file" id="files" name="files[]" />
+			<input type="file" id="files" name="irudi" />
 			<br />
-			<output id="list"></output>
+			<output id="lists" name="lists"></output>
 
 			<label for="botoia"></label>
 			<input id="botoia" type="submit" value="Bidali" >
 			<input type="reset" value="Borratu" id="reset">
 			
+			
 	</fieldset>
 </form>
-	<a href="layout.html">
-		<input id="botoia" type="button" value="Atzera">
-	</a> 	
+	<footer class='main' id='f2'>
+		 <a href="layoutLogeatua.html">Atzera</a>
+	</footer>	
 
 	<script>
             function archivo(evt) {
-                var files = evt.target.files; // FileList object
+                var files = evt.target.files;
              
                 // Obtenemos la imagen del campo "file".
                 for (var i = 0, f; f = files[i]; i++) {
@@ -116,7 +120,7 @@
                     reader.onload = (function(theFile) {
                         return function(e) {
                           // Insertamos la imagen
-                         document.getElementById("list").innerHTML = ['<img class="thumb" src="', e.target.result,'" title="', escape(theFile.name), '"/>'].join('');
+                         document.getElementById("lists").innerHTML = ['<img class="thumb" src="', e.target.result,'" title="', escape(theFile.name), '"/>'].join('');
                         };
                     })(f);
              
