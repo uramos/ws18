@@ -7,7 +7,7 @@
 	
 <body>
 <h2> Erabiltzaileak Login egin</h2>
-	<form method="post" action="login.php" id="erablogin" name="erablogin">
+	<form method="post" action="Login.php" id="erablogin" name="erablogin">
 		<fieldset >
 			<legend>ID panela:</legend>
 			Email: <input type="email" id="posta" name="posta"  value="" size="30"/><p>
@@ -24,7 +24,6 @@
 if(isset($_POST['posta'])){
 	$usr_email=$_POST['posta'];
 	$link= new mysqli($zerbitzaria, $erabiltzailea, $gakoa, $db);
-
 	if($link->connect_errno) {
 		die( "Huts egin du konexioak MySQL-ra: (". $link-> connect_errno .") " .$link-> connect_error);
 	}

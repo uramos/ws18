@@ -1,7 +1,11 @@
 <?php
 
-$lokal=1; // hodeian 0, lokalean gauedenean 1
-
+ // hodeian 0, lokalean gauedenean 1
+if($_SERVER['HTTP_HOST'] == 'localhost'){
+	$lokal=1;
+}else{
+	$lokal=0;
+}
 
 if ($lokal){
    $zerbitzaria="localhost";

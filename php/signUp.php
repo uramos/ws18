@@ -16,7 +16,8 @@
 	
 	
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-	<script>
+
+<script>
 	
  $(document).ready(function(){
 	 postaZuzena = function(){
@@ -79,12 +80,12 @@
             </div>
 			 <div class="form-label"><label for="username">Izen Abizenak</label></div>
             <div class="form-input">
-              <input type="text" name="username" id="username" size="15" pattern="([A-Z][a-z]{1,150}\s)*([A-Z][a-z]{1,150}\s)([A-Z][a-z]{1,150})" value="">
+              <input type="text" name="username" id="username" size="15" pattern="([A-Z][a-z]{1,150}\s)*([A-Z][a-z]{1,150}\s)([A-Z][a-z]{1,150})" title="Izen eta Abizenak letra larriz hasi mesedez." value="">
             </div>
             <div class="clearer"><!-- --></div>
             <div class="form-label"><label for="password">Pasahitza</label></div>
             <div class="form-input">
-              <input type="password" name="password" id="password" size="15" title="Letra larri, xehe eta zenbakiez osatutako pasahitza, 8-koa gutxienez" pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$">
+              <input type="password" name="password" id="password" size="15" pattern="([A-Za-z0-9]{8,16})" title="pasahitzak gutxienez 8 karaktere.">
             </div>
 			 <div class="clearer"><!-- --></div>
 			<div class="form-label"><label for="password2">Errepikatu Pasahitza</label></div>
@@ -149,7 +150,7 @@
 include 'dbConfig.php';
 
 #hau ere lerro bateko iruzkina
-/*Oraingoan zenbait lerrotan barrena           [A-Z][A-Za-zñÑáéíóúÁÉÍÓÚüÜ]{1,} [A-Z][A-Za-zñÑáéíóúÁÉÍÓÚüÜ]{1,}
+/*Oraingoan zenbait lerrotan barrena           title="Letra larri, xehe eta zenbakiez osatutako pasahitza, 8-koa gutxienez" pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$"
 Luzatzen da, argi dago? */
 if (isset($_POST['submit'])) { 
 $link= new mysqli($zerbitzaria, $erabiltzailea, $gakoa, $db);
