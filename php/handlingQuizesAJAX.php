@@ -20,7 +20,7 @@
 <script >
 
 $(document).ready(function(){
-	$("#galdSortu").click(function(){
+	
         $.postaZuzena = function(){
             var balioa= $("#posta").val();
             if (balioa.match((/^[a-zA-Z]{3,20}[0-9]{3}@ikasle\.ehu\.eus$/))){
@@ -40,7 +40,7 @@ $(document).ready(function(){
 			}
 		}
 		
-        $('#quizMaker').submit(function() {
+        $("#galdSortu").click(function(){
             if (($("#posta").val()!=="")&& ($("#sarGaldera").val()!=="")&&($("#sarZuzena").val()!=="")&&($("#sarOkerra1").val()!=="")
                 &&($("#sarOkerra2").val()!=="")&&($("#sarOkerra3").val()!=="")&&($("#galderaZail").val()!=="") &&($("#galderaGai").val()!=="")){
                 if ($.postaZuzena()) {
@@ -74,13 +74,6 @@ $(document).ready(function(){
                 return false;
             }
         });
-		
-	
-		
-		
-
-		
-    });
 });
 	
 		function loadDoc() {
@@ -176,7 +169,7 @@ function myFunction(xml) {
 			<br>
 			<br>
 			<button type="button" onclick="loadDoc()">Erakutsi galderak</button>
-			<button type="button" id="galdSortu" value="Galdera sortu" onclick="">Galdera sortu</button>
+			<button type="button" id="galdSortu" value="Galdera sortu" >Galdera sortu</button>
 			
 	</fieldset>
 </form>
