@@ -23,7 +23,7 @@ SARRERA OKERRA 1 </th><th> SARRERA OKERRA 2 </th><th> SARRERA OKERRA 3 </th><th>
 	}
 echo '</table>';
 mysqli_free_result($ema);
-echo "<a href=../layoutLogeatua.html>ATZERA</a><br>";
+echo "<a href='javascript:history.back(-1);'>Atzera</a>";
 mysqli_close($link);
 
 ?> 

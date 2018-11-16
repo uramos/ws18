@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta name="tipo_contenido" content="text/html;" http-equiv="content-type" charset="utf-8">
-	<link rel='stylesheet' type='type/css' href='styles/style.css'/>
+	<link rel='stylesheet' type='type/css' href='../styles/style.css'/>
 </head>
 	
 <body>
@@ -40,7 +40,7 @@ if(isset($_POST['posta'])){
 		mysqli_close($link);
 		if($rows_cnt==1){
 			$rows_cnt=0;
-			echo"<p> Access granted<p> <a href='../layoutLogeatua.html'>Logeatu zara</a>";
+			echo"<p> Access granted<p> <a href='layoutLogeatua.php?erab=$usr_email'>Logeatu zara</a>";
 		}else{
 			echo"<p><font color=#FF3300> Autentidfikazio errorea! Saiatu berriro</font><p>";
 		}

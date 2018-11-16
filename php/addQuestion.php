@@ -200,8 +200,8 @@ mysqli_close($link);
 	</fieldset>
 </form>
 	<footer class='main' id='f2'>
-		 <a href="../layoutLogeatua.html">Atzera</a>
-	</footer>	
+		<a href="javascript:history.back(-1);">Atzera</a>
+	</footer>
 
 	<script>
             function archivo(evt) {
@@ -229,6 +229,7 @@ mysqli_close($link);
              
             document.getElementById('files').addEventListener('change', archivo, false);
 			
-      </script>
+    </script>
+	 
 </body>
 </html>

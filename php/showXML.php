@@ -10,7 +10,7 @@
 		echo"<tr><td>". $galdera['author'] . "</td><td>". $galdera->itemBody->p ." </td><td>". $galdera->correctResponse->value ."</td></tr>\n";
 	}
 	echo '</table>';	
-	echo "<p> <a href='../layoutLogeatua.html'>Atzera</a>";
+	echo "<p> <a href=javascript:history.back(-1);>Atzera</a>";
 ?>
 </body>
 </html>
