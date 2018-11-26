@@ -164,7 +164,7 @@ mysqli_close($link);
 	<fieldset>
 		<legend>Galdera sortu:</legend>
 			<label for="posta">eMail(*):</label>
-			<input type="text" name="posta" id="posta" value="adibide000@ikasle.ehu.eus"/>
+			<input type="text" name="posta" id="posta" value="<?php echo $_GET['erab']?>"/>
 			<br/>
 			<label for="sarGaldera">Egin nahi den galdera(*):</label>
 			<input type="text" name="sarGaldera" pattern="[A-Za-z ,-?]{10,150}" class="sarrera" id="sarGaldera"/>
