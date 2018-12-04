@@ -4,6 +4,7 @@
 	
 	
 	$posta = $_GET['posta'];
+
 	$soapclient = new nusoap_client('http://ehusw.es/rosa/webZerbitzuak/egiaztatuMatrikula.php?wsdl',true);
 	
 	$emaitza = $soapclient->call('egiaztatuE',array ('x'=>$posta));

@@ -1,27 +1,7 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<meta name="tipo_contenido" content="text/html;" http-equiv="content-type" charset="utf-8">
-	<link rel='stylesheet' type='type/css' href='../styles/style.css'/>
-</head>
-	
-<body>
-<h2> Erabiltzaileak Login egin</h2>
-	<form method="post" action="Login.php" id="erablogin" name="erablogin">
-		<fieldset >
-			<legend>ID panela:</legend>
-			Email: <input type="email" id="posta" name="posta"  value="" size="30"/><p>
-			Password:  <input type="password" id="pasahitza" name="pasahitza" size="30"/><p>
-			<input type="submit" value="Login Egin" id="submita" name="submita"/></br>
-		</fieldset>
-	</form>
-</body>
-</html>
-
 <?php	
 	include 'dbConfig.php';
-	
-if(isset($_POST['posta'])){
+	session_start();
+	if(isset($_POST['posta'])){
 	$usr_email=$_POST['posta'];
 	$link= new mysqli($zerbitzaria, $erabiltzailea, $gakoa, $db);
 	if($link->connect_errno) {
@@ -39,11 +19,53 @@ if(isset($_POST['posta'])){
 		$rows_cnt = $ema->num_rows;
 		mysqli_close($link);
 		if($rows_cnt==1){
-			$rows_cnt=0;
-			echo"<p> Access granted<p> <a href='layoutLogeatua.php?erab=$usr_email'>Logeatu zara</a>";
+		    
+		    $row = mysqli_fetch_array($ema,MYSQLI_ASSOC);
+		    
+		    if(!$row['Blokeatuta']){
+    			$rows_cnt=0;
+    			//sesioa hasieratu
+    			//session_start();
+    			$_SESSION['user']=$usr_email;
+                
+                if($usr_email == 'admin000@ehu.eus'){
+					$_SESSION['sessionmode']='admin';
+                    echo"<p>Special access granted<p> <a href='handlingAccounts.php'>Logeatu zara</a>";
+                }else{
+					$_SESSION['sessionmode']='user';
+    		    	echo"<p> Access granted<p> <script language='javascript'>window.location='handlingQuizesAJAX.php'</script>;";
+				}
+		    }else{
+		        	echo"<p><font color=#FF3300> ERABILTZAILE BLOKEATUA !</font><p>";
+		    }
 		}else{
 			echo"<p><font color=#FF3300> Autentidfikazio errorea! Saiatu berriro</font><p>";
 		}
 	}
 }
 ?>
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="tipo_contenido" content="text/html;" http-equiv="content-type" charset="utf-8">
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+</head>
+	
+<body>
+<h2> Erabiltzaileak Login egin</h2>
+	<form method="post" action="Login.php" id="erablogin" name="erablogin">
+		<fieldset >
+			<legend>ID panela:</legend>
+			Email: <input type="email" id="posta" name="posta"  value="" size="30"/><p>
+			Password:  <input type="password" id="pasahitza" name="pasahitza" size="30"/><p>
+			<input type="submit" value="Login Egin" id="submita" name="submita"/></br>
+		</fieldset>
+		<?php
+		if(!isset($_SESSION['user']))
+		echo "<p> <a href='layout.php'>Atzera</a>";
+		?>
+	</form>
+</body>
+</html>
+

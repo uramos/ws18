@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,21 +15,10 @@
 	
 	
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-	
-	
 
-<script >
+	<script >
 
-$(document).ready(function(){
-	
-        $.postaZuzena = function(){
-            var balioa= $("#posta").val();
-            if (balioa.match((/^[a-zA-Z]{3,20}[0-9]{3}@ikasle\.ehu\.eus$/))){
-                return true;
-            } else {
-                return false;
-            }
-        }
+	$(document).ready(function(){
 		
 		function galderaOndo(){
 			var balioa = $("#sarGaldera").val();
@@ -40,93 +30,96 @@ $(document).ready(function(){
 			}
 		}
 		
-        $("#galdSortu").click(function(){
-            if (($("#posta").val()!=="")&& ($("#sarGaldera").val()!=="")&&($("#sarZuzena").val()!=="")&&($("#sarOkerra1").val()!=="")
-                &&($("#sarOkerra2").val()!=="")&&($("#sarOkerra3").val()!=="")&&($("#galderaZail").val()!=="") &&($("#galderaGai").val()!=="")){
-                if ($.postaZuzena()) {
-                    if ($("#galderaZail").val().match(/^[1-5]$/)){
-						if(galderaOndo()){
-							
-							$.ajax({
-							type: "POST",
-							url: "addQuestion.php",
-							data: $("#quizMaker").serialize(),
-							success: function(){
-								loadDoc()
-							}	
-							});
-							
-							return true;
-						}else{
-							alert("Galderak 10 karaktereko luzera izan behar du gutxienez.");
-							return false;
-						}
-                    } else {
-                        alert("Zailtasunak zenbaki osoa izan behar du eta 1-5 artekoa.");
-                        return false;
-                    }
-                } else{
-                    alert("Sartutako postak ez ditu baldintzak betetzen.");
-                    return false;
-                }
-            } else {
-                alert("Bete beharreko guztia bete mesedez.");
-                return false;
-            }
-        });
-});
-	
-		function loadDoc() {
-			var xhttp = new XMLHttpRequest();
-			xhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200) {
-				myFunction(this);
+		$("#galdSortu").click(function(){
+			if (($("#sarGaldera").val()!=="")&&($("#sarZuzena").val()!=="")&&($("#sarOkerra1").val()!=="")
+				&&($("#sarOkerra2").val()!=="")&&($("#sarOkerra3").val()!=="")&&($("#galderaZail").val()!=="") &&($("#galderaGai").val()!=="")){
+				if ($("#galderaZail").val().match(/^[1-5]$/)){
+					if(galderaOndo()){
+						
+						$.ajax({
+						type: "POST",
+						url: "addQuestion.php",
+						data: $("#quizMaker").serialize(),
+						success: function(){
+							loadDoc()
+						}	
+						});
+						
+						return true;
+					}else{
+						alert("Galderak 10 karaktereko luzera izan behar du gutxienez.");
+						return false;
+					}
+				} else {
+					alert("Zailtasunak zenbaki osoa izan behar du eta 1-5 artekoa.");
+					return false;
+				}
+			}else {
+				alert("Bete beharreko guztia bete mesedez.");
+				return false;
 			}
-		};
-		xhttp.open("GET",'../xml/questions.xml',true);
-		xhttp.send();
+		});
+	});
+		
+	function loadDoc() {
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			myFunction(this);
 		}
-</script>	
-<script >
-function myFunction(xml) {
-		var i;
-		console.log("dentro");
-		var xmlDoc = xml.responseXML;
-		var table="<tr><th>Egilea</th><th>Galdera</th><th>Erantzun Zuzena</th></tr>";
-		var x = xmlDoc.getElementsByTagName("assessmentItem");
-		console.log("2");
-		
-		var nodoak = xmlDoc.getElementsByTagName("assessmentItems")[0].childNodes;
-		console.log(nodoak.length)
-		console.log(nodoak[0]);
-		console.log(nodoak[1]);
-		console.log(nodoak[2]);
-		
-		for (i = 1; i < nodoak.length; i++) {
+	};
+	xhttp.open("GET",'../xml/questions.xml',true);
+	xhttp.send();
+	}
+	</script>
+	
+	<script >
+	function myFunction(xml) {
+			var i;
+			console.log("dentro");
+			var xmlDoc = xml.responseXML;
+			var table="<tr><th>Egilea</th><th>Galdera</th><th>Erantzun Zuzena</th></tr>";
+			var x = xmlDoc.getElementsByTagName("assessmentItem");
+			console.log("2");
 			
-
-			if(nodoak[i].nodeType == 1){
-				if (nodoak[i].getAttribute("author") == "<?php echo $_GET['erab']?>"){
-					
-					table += "<tr><td>" +
-					nodoak[i].getAttribute("author")+ "</td><td>" +
-					nodoak[i].getElementsByTagName("p")[0].childNodes[0].nodeValue +"</td><td>" +
-					nodoak[i].getElementsByTagName("value")[0].childNodes[0].nodeValue +"</td></tr>";
+			var nodoak = xmlDoc.getElementsByTagName("assessmentItems")[0].childNodes;
+			console.log(nodoak.length)
+			console.log(nodoak[0]);
+			console.log(nodoak[1]);
+			console.log(nodoak[2]);
+			
+			for (i = 1; i < nodoak.length; i++) {
 				
+
+				if(nodoak[i].nodeType == 1){
+					if (nodoak[i].getAttribute("author") == "<?php echo $_SESSION['user']?>"){
+						
+						table += "<tr><td>" +
+						nodoak[i].getAttribute("author")+ "</td><td>" +
+						nodoak[i].getElementsByTagName("p")[0].childNodes[0].nodeValue +"</td><td>" +
+						nodoak[i].getElementsByTagName("value")[0].childNodes[0].nodeValue +"</td></tr>";
+					
+					}
 				}
 			}
-		}
-		console.log("4");
-		document.getElementById("galdTaula").innerHTML = table;
-		return true;
-		}
-</script>
+			console.log("4");
+			document.getElementById("galdTaula").innerHTML = table;
+			return true;
+			}
+	</script>
 
-
-<script >	
-		
-</script>
 </head>
+
+<?php 
+				if(empty($_SESSION['sessionmode']) || $_SESSION['sessionmode'] == "admin"){
+					echo "ZERBITZU HONETARAKO BAIMENIK EZ";
+					return false;
+				}			
+			
+?>
+
+
+
 
 <body>
 
@@ -136,7 +129,7 @@ function myFunction(xml) {
 			
 
 			<label for="posta">eMail(*):</label>
-			<input type="text" name="posta" id="posta" value="<?php echo $_GET['erab']?>" />
+			<input type="text" name="posta" id="posta" value="<?php  echo $_SESSION['user']?>" />
 			<br/>
 			<label for="sarGaldera">Egin nahi den galdera(*):</label>
 			<input type="text" name="sarGaldera" pattern="[A-Za-z ,-?]{10,150}" class="sarrera" id="sarGaldera"/>
@@ -172,6 +165,8 @@ function myFunction(xml) {
 			<button type="button" id="galdSortu" value="Galdera sortu" >Galdera sortu</button>
 			
 	</fieldset>
+	<p> <a href='layoutLogeatua.php'>Atzera</a>
+	
 </form>
 
 <center>
@@ -181,7 +176,7 @@ function myFunction(xml) {
 </center>
 
 	<footer class='main' id='f2'>
-		<a href="javascript:history.back(-1);">Atzera</a>
+	
 	</footer>
 	
 	<script>

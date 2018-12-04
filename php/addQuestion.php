@@ -1,101 +1,10 @@
-<?php
-
-include 'dbConfig.php';
-
-if (isset($_POST['posta'])){
-$link= new mysqli($zerbitzaria, $erabiltzailea, $gakoa, $db);
-
-if($link->connect_errno) {
-	die( "Huts egin du konexioak MySQL-ra: (". $link-> connect_errno .") " .$link-> connect_error);
-}
-
-if(empty($_FILES['irudi']['name'])){
-	$bin_nom_tmp = "../NoImage.png";
-	$binario_contenido = addslashes(fread(fopen($bin_nom_tmp, "rb"), filesize($bin_nom_tmp)));
-}else{
-	$bin_nom_tmp = $_FILES['irudi']['tmp_name'];
-	$binario_contenido = addslashes(fread(fopen($bin_nom_tmp, "rb"), filesize($bin_nom_tmp)));
-}
-
-
-$posta = $_POST['posta'];
-$sarGaldera=$_POST['sarGaldera'];
-$sarZuzena = $_POST['sarZuzena'];
-$sarOkerra1 = $_POST['sarOkerra1'];
-$sarOkerra2 = $_POST['sarOkerra2'];
-$sarOkerra3 = $_POST['sarOkerra3'];
-$galderaZail = $_POST['galderaZail'];
-$galderaGai = $_POST['galderaGai'];  
-
-if (preg_match('/^[a-zA-Z]{3,20}[0-9]{3}@ikasle\.ehu\.eus$/',"$posta")) {
-	if(strlen(trim($sarGaldera))>10){
-	    if(strlen(trim($sarZuzena))>0 and strlen(trim($sarOkerra1))>0 and strlen(trim($sarOkerra2))>0 and strlen(trim($sarOkerra3))>0 and strlen(trim($galderaGai))>0){
-	        if (preg_match('/^[1-5]$/',"$galderaZail")) {
-	        
-$sql = "INSERT INTO questions (eMail, sarGaldera, sarZuzena, sarOkerra1, sarOkerra2, sarOkerra3, galderaZail, galderaGai, IrudiBin) 
-VALUES ('$posta', '$sarGaldera', '$sarZuzena','$sarOkerra1','$sarOkerra2','$sarOkerra3','$galderaZail','$galderaGai', '$binario_contenido')";
-
-    //xml kargatu
-	$xml=simplexml_load_file('../xml/questions.xml');
-	if($xml == false){
-		echo "Errorea XML-a kargatzean.";
-		return false;
-	}
-		
-	$galdera = $xml->addChild('assesmentItem');
-	
-	$galdera->addAttribute('author',$_POST['posta']);
-	$galdera->addAttribute('subject',$_POST['galderaGai']);
-	
-	$iBody = $galdera->addChild('itemBody');
-	$iBody->addChild('p', $_POST['sarGaldera']);		
-	$cResponse = $galdera->addChild('correctResponse');
-	$cResponse->addChild('value', $_POST['sarZuzena']);		
-	$iResponse = $galdera->addChild('incorrectResponses');
-	$iResponse->addChild('value', $_POST['sarOkerra1']);
-	$iResponse->addChild('value', $_POST['sarOkerra2']);
-	$iResponse->addChild('value', $_POST['sarOkerra3']);
-	
-	$xml->asXML('../xml/questions.xml');
-
-$ema=mysqli_query($link,$sql);
-
-if(!$ema){
-	die('Errorea query-a gauzatzerakoan: ' . mysqli_error($link));
-}
-
-echo "Galdera bat gehitu da datu-basera. <br>";
-echo "Sortu diren galderak ikusteko. " . "<a href=\"showQuestion.php\">GALDERAK</a>";
- 
- 
-	        }else{
-	              echo "alert('Zailtasunak zenbaki osoa izan behar du eta 1-5 artekoa.');";
-	        }
-	    }else{
-	         echo "alert('Bete beharreko guztia bete mesedez.');";
-	    }
-	}else{
-	    echo "alert('Galderak 10 karaktereko luzera izan behar du gutxienez.');";
-	}
-}else{
-   echo "alert('Sartutako postak ez ditu baldintzak betetzen.');";
-}
-
- 
-mysqli_close($link);
-
-
-
-
-}
-?>
-
+<?php session_start(); ?>
 
 
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
     <title>Galdera sortu</title>
 
 	<link rel="stylesheet" type="text/css" href="../styles/form.css" />
@@ -107,6 +16,13 @@ mysqli_close($link);
 	
 </head>
 
+<?php 
+				if(empty($_SESSION['sessionmode']) || $_SESSION['sessionmode'] == "admin"){
+					echo "ZERBITZU HONETARAKO BAIMENIK EZ";
+					return false;
+				}		
+			
+?>
 <body>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
@@ -114,14 +30,14 @@ mysqli_close($link);
 
  $(document).ready(function(){
  
-        $.postaZuzena = function(){
-            var balioa= $("#posta").val();
-            if (balioa.match((/^[a-zA-Z]{3,20}[0-9]{3}@ikasle\.ehu\.eus$/))){
-                return true;
-            } else {
-                return false;
-            }
-        }
+        //$.postaZuzena = function(){
+         //   var balioa= $("#posta").val();
+           // if (balioa.match((/^[a-zA-Z]{3,20}[0-9]{3}@ikasle\.ehu\.eus$/))){
+             //   return true;
+            //} else {
+              //  return false;
+            //}
+        //}
 		
 		function galderaOndo(){
 			var balioa = $("#sarGaldera").val();
@@ -136,7 +52,7 @@ mysqli_close($link);
         $('#quizMaker').submit(function() {
             if (($("#posta").val()!=="")&& ($("#sarGaldera").val()!=="")&&($("#sarZuzena").val()!=="")&&($("#sarOkerra1").val()!=="")
                 &&($("#sarOkerra2").val()!=="")&&($("#sarOkerra3").val()!=="")&&($("#galderaZail").val()!=="") &&($("#galderaGai").val()!=="")){
-                if ($.postaZuzena()) {
+                //if ($.postaZuzena()) {
                     if ($("#galderaZail").val().match(/^[1-5]$/)){
 						if(galderaOndo()){
 							return true;
@@ -148,10 +64,10 @@ mysqli_close($link);
                         alert("Zailtasunak zenbaki osoa izan behar du eta 1-5 artekoa.");
                         return false;
                     }
-                } else{
-                    alert("Sartutako postak ez ditu baldintzak betetzen.");
-                    return false;
-                }
+               //} else{
+                 //   alert("Sartutako postak ez ditu baldintzak betetzen.");
+                   // return false;
+                //}
             } else {
                 alert("Bete beharreko guztia bete mesedez.");
                 return false;
@@ -198,38 +114,131 @@ mysqli_close($link);
 			
 			
 	</fieldset>
-</form>
-	<footer class='main' id='f2'>
-		<a href="javascript:history.back(-1);">Atzera</a>
-	</footer>
+	<p> <a href='layoutLogeatua.php'>Atzera</a>";
+	
+	<?php
+		
 
-	<script>
-            function archivo(evt) {
-                var files = evt.target.files;
-             
-                // Obtenemos la imagen del campo "file".
-                for (var i = 0, f; f = files[i]; i++) {
-					//Solo admitimos imágenes.
-                    if (!f.type.match('image.*')) {
-                        continue;
-                    }
-             
-                    var reader = new FileReader();
-             
-                    reader.onload = (function(theFile) {
-                        return function(e) {
-                          // Insertamos la imagen
-                         document.getElementById("lists").innerHTML = ['<img class="thumb" src="', e.target.result,'" title="', escape(theFile.name), '"/>'].join('');
-                        };
-                    })(f);
-             
-                    reader.readAsDataURL(f);
-                }
-            }
-             
-            document.getElementById('files').addEventListener('change', archivo, false);
-			
-    </script>
+		if (isset($_POST['sarGaldera'])){
+			include 'dbConfig.php';
+			$link= new mysqli($zerbitzaria, $erabiltzailea, $gakoa, $db);
+
+			if($link->connect_errno) {
+				die( "Huts egin du konexioak MySQL-ra: (". $link-> connect_errno .") " .$link-> connect_error);
+			}
+
+			if(empty($_FILES['irudi']['name'])){
+				$bin_nom_tmp = "../NoImage.png";
+				$binario_contenido = addslashes(fread(fopen($bin_nom_tmp, "rb"), filesize($bin_nom_tmp)));
+			}else{
+				$bin_nom_tmp = $_FILES['irudi']['tmp_name'];
+				$binario_contenido = addslashes(fread(fopen($bin_nom_tmp, "rb"), filesize($bin_nom_tmp)));
+			}
+
+
+			$posta = $_POST['posta'];
+			$sarGaldera=$_POST['sarGaldera'];
+			$sarZuzena = $_POST['sarZuzena'];
+			$sarOkerra1 = $_POST['sarOkerra1'];
+			$sarOkerra2 = $_POST['sarOkerra2'];
+			$sarOkerra3 = $_POST['sarOkerra3'];
+			$galderaZail = $_POST['galderaZail'];
+			$galderaGai = $_POST['galderaGai'];  
+
+			//if (preg_match('/^[a-zA-Z]{3,20}[0-9]{3}@ikasle\.ehu\.eus$/',"$posta")) {
+			if(strlen(trim($sarGaldera))>10){
+				if(strlen(trim($sarZuzena))>0 and strlen(trim($sarOkerra1))>0 and strlen(trim($sarOkerra2))>0 and strlen(trim($sarOkerra3))>0 and strlen(trim($galderaGai))>0){
+					if (preg_match('/^[1-5]$/',"$galderaZail")) {
+						
+						$sql = "INSERT INTO questions (eMail, sarGaldera, sarZuzena, sarOkerra1, sarOkerra2, sarOkerra3, galderaZail, galderaGai, IrudiBin) 
+						VALUES ('$posta', '$sarGaldera', '$sarZuzena','$sarOkerra1','$sarOkerra2','$sarOkerra3','$galderaZail','$galderaGai', '$binario_contenido')";
+
+						$ema=mysqli_query($link,$sql);
+
+						if(!$ema){
+							die('Errorea query-a gauzatzerakoan: ' . mysqli_error($link));
+						}
+
+						echo "Galdera bat gehitu da datu-basera. <br>";
+						
+						
+						//xml kargatu
+						$xml=simplexml_load_file('../xml/questions.xml');
+						if($xml == false){
+							echo "Errorea XML-a kargatzean.";
+							return false;
+						}
+							
+						$galdera = $xml->addChild('assesmentItem');
+						
+						$galdera->addAttribute('author',$_POST['posta']);
+						$galdera->addAttribute('subject',$_POST['galderaGai']);
+						
+						$iBody = $galdera->addChild('itemBody');
+						$iBody->addChild('p', $_POST['sarGaldera']);		
+						$cResponse = $galdera->addChild('correctResponse');
+						$cResponse->addChild('value', $_POST['sarZuzena']);		
+						$iResponse = $galdera->addChild('incorrectResponses');
+						$iResponse->addChild('value', $_POST['sarOkerra1']);
+						$iResponse->addChild('value', $_POST['sarOkerra2']);
+						$iResponse->addChild('value', $_POST['sarOkerra3']);
+						
+						$xml->asXML('../xml/questions.xml');
+						
+						echo "Sortu diren galderak ikusteko. " . "<a href=\"showXML.php\">GALDERAK</a>";
+			 
+					}else{
+						  echo "alert('Zailtasunak zenbaki osoa izan behar du eta 1-5 artekoa.');";
+					}
+				}else{
+					 echo "alert('Bete beharreko guztia bete mesedez.');";
+				}
+			}else{
+				echo "alert('Galderak 10 karaktereko luzera izan behar du gutxienez.');";
+			}
+			//}else{
+			  // echo "alert('Sartutako postak ez ditu baldintzak betetzen.');";
+			//}
+
+			 
+			mysqli_close($link);
+
+		}
+?>
+</form>
+
+
+<footer class='main' id='f2'>
+	<a href="javascript:history.back(-1);">Atzera</a>
+</footer>
+
+<script>
+	function archivo(evt) {
+		var files = evt.target.files;
+	 
+		// Obtenemos la imagen del campo "file".
+		for (var i = 0, f; f = files[i]; i++) {
+			//Solo admitimos imágenes.
+			if (!f.type.match('image.*')) {
+				continue;
+			}
+	 
+			var reader = new FileReader();
+	 
+			reader.onload = (function(theFile) {
+				return function(e) {
+				  // Insertamos la imagen
+				 document.getElementById("lists").innerHTML = ['<img class="thumb" src="', e.target.result,'" title="', escape(theFile.name), '"/>'].join('');
+				};
+			})(f);
+	 
+			reader.readAsDataURL(f);
+		}
+	}
+	 
+	document.getElementById('files').addEventListener('change', archivo, false);
+	
+</script>
 	 
 </body>
 </html>
