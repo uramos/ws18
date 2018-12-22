@@ -1,18 +1,13 @@
 <?php
 session_start();
-
 ?>
-
-
-
-
 <html>
-
 
 <head>
 	
 	<title>Erregistroa</title>
 	<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+	
 	
 	<style>
           .thumb {
@@ -23,11 +18,74 @@ session_start();
           }
     </style>	
 	
+</head>
+
+<?php 
+				if(isset($_SESSION['user'])){
+					echo "ZERBITZU HONETARAKO BAIMENIK EZ";
+					return false;
+				}			
+			
+?>
+
+<body style="margin-top:100px"> 
+<center>
+<form action="signUp.php" method="post" id="signUp" name="signUp">
+
+    <div class="loginform">
+    <div class="form-label"><label for="posta"  >Posta Elektronikoa</label></div>
+    <div class="form-input">
+		<input type="text" name="posta" id="posta" size="15" onchange="ikasgaian()">
+    </div>
+	<br>
+	<div class="form-label"><label for="username">Izen Abizenak</label></div>
+    <div class="form-input">
+		<input type="text" name="username" id="username" size="15" pattern="([A-Z][a-z]{1,150}\s)*([A-Z][a-z]{1,150}\s)([A-Z][a-z]{1,150})" title="Izen eta Abizenak letra larriz hasi mesedez." value="">
+    </div>
+	<br>
+    <div class="clearer"><!-- --></div>
+    <div class="form-label"><label for="password">Pasahitza</label></div>
+    <div class="form-input">
+		<input type="password" name="password" id="password" size="15" pattern="([A-Za-z0-9]{8,16})" title="pasahitzak gutxienez 8 karaktere." onchange="pasahitzaOndo()">
+    </div>
+	<br>
+	<div class="clearer"><!-- --></div>
+	<div class="form-label"><label for="password2">Errepikatu Pasahitza</label></div>
+    <div class="form-input">
+		<input type="password" name="password2" id="password2" size="15">
+    </div>
+    </div>
+	<br>
+	<div class="form-label"><label for="argazki">Aukeratu argazki bat</label></div>
+		<input type="file" id="files" name="argazki"  />
+	<br/>
+	<output id="lists" name="lists"  ></output>
+		  
+	<br />
+    <!--<input id="anchor" type="hidden" name="anchor" value="">
+    <script>document.getElementById('anchor').value = location.hash</script>-->
+    <input type="submit" name="submit" id="erregbtn" value="Erregistratu">
+	<input type="reset" id="reset" value="Ezabatu"/><br><br>
+    <span id="matrikulatua"></span><br>
+	<span id="pasahitza"></span><br>
+	
+</form>
+
+</center>
+
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 
 <script>
 	
 	var xhro1 = new XMLHttpRequest();
+	
+	function ikasgaian(){
+		
+		var posta = $("#posta").val();
+		
+		xhro1.open("GET","Matrikulatuak.php?posta="+ posta, true);
+		xhro1.send();
+	}
 	
 	xhro1.onreadystatechange = function(){
 		
@@ -48,16 +106,25 @@ session_start();
 			}
 		}			
 	}
+	
 	var xhro2 = new XMLHttpRequest();
+	
+	function pasahitzaOndo(){
+		
+		var pass = $("#password").val();
+		
+		xhro2.open("GET","bezeroPass.php?pass="+pass, true);
+		
+		xhro2.send();
+		console.log(xhro2);
+	}
 	
 	xhro2.onreadystatechange = function(){ 
 	
-	    console.log('pass');
-	    console.log(xhro2.readyState);
 		if((xhro2.readyState==4)&&(xhro2.status==200)){
 		
 		var ema2 = xhro2.responseText;
-			console.log(ema2);
+
 			if(ema2 == "Onartua"){
 									
 				document.getElementById("pasahitza").innerHTML = "Pasahitz egokia."
@@ -68,28 +135,6 @@ session_start();
 			}
 		}
 	}
-	
-			function ikasgaian(){
-				
-				var posta = $("#posta").val();
-				console.log(posta);
-				
-				xhro1.open("GET","Matrikulatuak.php?posta="+ posta, true);
-				console.log(xhro1);
-				xhro1.send();
-			}
-	
-			function pasahitzaOndo(){
-				
-				var pass = $("#password").val();
-				console.log(pass);
-				xhro2.open("POST","bezeroPass.php", true);
-				
-				xhro2.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-				
-				xhro2.send("password="+password);
-				console.log(xhro2);
-			}
 	
  $(document).ready(function(){
 	 postaZuzena = function(){
@@ -145,108 +190,50 @@ session_start();
 			}
         })	
   });
+
+	//irudia
+		function archivo(evt) {
+			var files = evt.target.files; // FileList object
+		 
+			// Obtenemos la imagen del campo "file".
+			for (var i = 0, f; f = files[i]; i++) {
+				//Solo admitimos imágenes.
+				if (!f.type.match('image.*')) {
+					continue;
+				}
+		 
+				var reader = new FileReader();
+		 
+				reader.onload = (function(theFile) {
+					return function(e) {
+					  // Insertamos la imagen
+					 document.getElementById("lists").innerHTML = ['<img class="thumb" src="', e.target.result,'" title="', escape(theFile.name), '"/>'].join('');
+					};
+				})(f);
+		 
+				reader.readAsDataURL(f);
+			}
+		}
+		 
+		document.getElementById('files').addEventListener('change', archivo, false);
+			
 </script>
-	
-	
-</head>
 
-
-<?php 
-				if(isset($_SESSION['user'])){
-					echo "ZERBITZU HONETARAKO BAIMENIK EZ";
-					return false;
-				}			
-			
-?>
-
-
-<body style="margin-top:100px"> 
-<center>
-<form action="signUp.php" method="post" id="signUp" name="signUp">
-
-    <div class="loginform">
-    <div class="form-label"><label for="posta"  >Posta Elektronikoa</label></div>
-    <div class="form-input">
-		<input type="text" name="posta" id="posta" size="15" onchange="ikasgaian()">
-    </div>
-	<div class="form-label"><label for="username">Izen Abizenak</label></div>
-    <div class="form-input">
-		<input type="text" name="username" id="username" size="15" pattern="([A-Z][a-z]{1,150}\s)*([A-Z][a-z]{1,150}\s)([A-Z][a-z]{1,150})" title="Izen eta Abizenak letra larriz hasi mesedez." value="">
-    </div>
-    <div class="clearer"><!-- --></div>
-    <div class="form-label"><label for="password">Pasahitza</label></div>
-    <div class="form-input">
-		<input type="password" name="password" id="password" size="15" pattern="([A-Za-z0-9]{8,16})" title="pasahitzak gutxienez 8 karaktere." onchange="pasahitzaOndo()">
-    </div>
-	<div class="clearer"><!-- --></div>
-	<div class="form-label"><label for="password2">Errepikatu Pasahitza</label></div>
-    <div class="form-input">
-		<input type="password" name="password2" id="password2" size="15">
-    </div>
-    </div>
-
-	<div class="form-label"><label for="argazki">Aukeratu argazki bat</label></div>
-		<input type="file" id="files" name="argazki"  />
-	<br />
-	<output id="lists" name="lists"  ></output>
-		  
-	<br />
-    <!--<input id="anchor" type="hidden" name="anchor" value="">
-    <script>document.getElementById('anchor').value = location.hash</script>-->
-    <input type="submit" name="submit" id="erregbtn" value="Erregistratu">
-	<input type="reset" id="reset" value="Ezabatu"/><br><br>
-    
-	<span id="matrikulatua"></span><br>
-	<span id="pasahitza"></span>
-
-</form>
-
-</center>
-
-<script> //irudia
-            function archivo(evt) {
-                var files = evt.target.files; // FileList object
-             
-                // Obtenemos la imagen del campo "file".
-                for (var i = 0, f; f = files[i]; i++) {
-					//Solo admitimos imágenes.
-                    if (!f.type.match('image.*')) {
-                        continue;
-                    }
-             
-                    var reader = new FileReader();
-             
-                    reader.onload = (function(theFile) {
-                        return function(e) {
-                          // Insertamos la imagen
-                         document.getElementById("lists").innerHTML = ['<img class="thumb" src="', e.target.result,'" title="', escape(theFile.name), '"/>'].join('');
-                        };
-                    })(f);
-             
-                    reader.readAsDataURL(f);
-                }
-            }
-             
-            document.getElementById('files').addEventListener('change', archivo, false);
-			
-      </script>
-
+<a href=layout.php>Hasiera</a><br>
 </body>
 
 </html>
-
-
-
-
 
 <?php
 
 #hau ere lerro bateko iruzkina
 /*Oraingoan zenbait lerrotan barrena           
 Luzatzen da, argi dago? */
+include 'dbConfig.php';
+
 if (isset($_POST['posta'])) {
 	
-	include 'dbConfig.php';
+	
 	
 	$link= new mysqli($zerbitzaria, $erabiltzailea, $gakoa, $db);
 
@@ -267,16 +254,22 @@ if (isset($_POST['posta'])) {
 
 	}
 	
-	$erregistratua=mysqli_query($esteka, "SELECT ePosta FROM erabiltzaile WHERE ePosta='$_POST[posta]'");
+	
+	
+	$erregistratua=mysqli_query($link, "SELECT ePosta FROM erabiltzaile WHERE ePosta='$_POST[posta]'");
 	if(mysqli_num_rows($erregistratua)>0)
 	{
 		echo "Erregistratua zaude";
-		echo "<p> <a href='layout.php'>Hasiera</a>";
 		return false;
 	}
 	
+	
+	$pass = $_POST['password'];    
+    $passHash = password_hash($pass, PASSWORD_BCRYPT);
+	
+	
 	$sql = "INSERT INTO erabiltzaile (ePosta, Deitura, Pass, Argazkia)
-	VALUES ('$_POST[posta]', '$_POST[username]',  '$_POST[password]','$binario_contenido')";
+	VALUES ('$_POST[posta]', '$_POST[username]',  '$passHash','$binario_contenido')";
 
 	$ema = mysqli_query($link,$sql);
 	if(!$ema){
@@ -287,9 +280,11 @@ if (isset($_POST['posta'])) {
 	}
 
 	echo "Erabiltzaile bat gehitu da datu-basera. <br>";
-	echo "Hasierara bueltatzeko" . "<a href=../layout.php>Hasiera</a><br>";
+//	echo "Hasierara bueltatzeko" . "<a href=layout.php>Hasiera</a><br>";
 
 }
+
+
 ?>
 
 

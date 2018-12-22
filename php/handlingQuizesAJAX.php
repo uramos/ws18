@@ -11,13 +11,15 @@
 	<link rel="stylesheet" type="text/css" href="../styles/input.css" />
 	<link rel="stylesheet" type="text/css" href="../styles/botoia.css" />
 	<link rel="stylesheet" type="text/css" href="../styles/thumb.css" />
-	
+	<link rel='stylesheet' type='text/css' href='../styles/horbar.css' />
 	
 	
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 
 	<script >
-
+    var gal = new XMLHttpRequest();
+    
+    
 	$(document).ready(function(){
 		
 		function galderaOndo(){
@@ -36,6 +38,8 @@
 				if ($("#galderaZail").val().match(/^[1-5]$/)){
 					if(galderaOndo()){
 						
+						
+						/*
 						$.ajax({
 						type: "POST",
 						url: "addQuestion.php",
@@ -44,6 +48,13 @@
 							loadDoc()
 						}	
 						});
+						
+						*/
+						
+						gal.open("POST","addUniqueQuestion.php",true);
+						gal.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+	                    gal.send($("#quizMaker").serialize());
+						
 						
 						return true;
 					}else{
@@ -64,29 +75,47 @@
 	function loadDoc() {
 		var xhttp = new XMLHttpRequest();
 		xhttp.onreadystatechange = function() {
-		if (this.readyState == 4 && this.status == 200) {
-			myFunction(this);
-		}
-	};
-	xhttp.open("GET",'../xml/questions.xml',true);
-	xhttp.send();
+	    	if (this.readyState == 4 && this.status == 200) {
+		    	myFunction(this);
+		    }
+	    };
+	    xhttp.open("GET",'../xml/questions.xml',true);
+	    xhttp.send();
 	}
 	</script>
 	
 	<script >
+	
+	gal.onreadystatechange = function() {
+	    	if (gal.readyState == 4 && gal.status == 200) {
+	    	    console.log("erantzuna: "+gal.responseText);
+	    	     if(gal.responseText=="REPEAT"){
+	                alert("Galdera errepikatua sartu duzu.");
+	                return false;
+	             }
+	         }else{
+		    	loadDoc();
+		    }
+	    
+	};
+	
+	
 	function myFunction(xml) {
+	    
+
+	    
+	    
 			var i;
-			console.log("dentro");
 			var xmlDoc = xml.responseXML;
 			var table="<tr><th>Egilea</th><th>Galdera</th><th>Erantzun Zuzena</th></tr>";
 			var x = xmlDoc.getElementsByTagName("assessmentItem");
 			console.log("2");
 			
 			var nodoak = xmlDoc.getElementsByTagName("assessmentItems")[0].childNodes;
-			console.log(nodoak.length)
-			console.log(nodoak[0]);
-			console.log(nodoak[1]);
-			console.log(nodoak[2]);
+			//console.log(nodoak.length)
+			//console.log(nodoak[0]);
+			//console.log(nodoak[1]);
+			//console.log(nodoak[2]);
 			
 			for (i = 1; i < nodoak.length; i++) {
 				
@@ -98,7 +127,7 @@
 						nodoak[i].getAttribute("author")+ "</td><td>" +
 						nodoak[i].getElementsByTagName("p")[0].childNodes[0].nodeValue +"</td><td>" +
 						nodoak[i].getElementsByTagName("value")[0].childNodes[0].nodeValue +"</td></tr>";
-					
+					    //console.log(nodoak[i].getAttribute("p"));
 					}
 				}
 			}
@@ -122,7 +151,15 @@
 
 
 <body>
-
+ 
+	     
+    <div align='left' id="navegador" role='navigation'>
+        <ul>
+        <li><?php echo $_SESSION['user'];?> </li>
+        </ul>
+    </div>
+    
+    
 <form enctype="multipart/form-data" id="quizMaker" name="quizMaker" method="post">
 	<fieldset>
 		<legend>Galdera sortu:</legend>
@@ -165,9 +202,10 @@
 			<button type="button" id="galdSortu" value="Galdera sortu" >Galdera sortu</button>
 			
 	</fieldset>
-	<p> <a href='layoutLogeatua.php'>Atzera</a>
+	
 	
 </form>
+<p> <a href='layoutLogeatua.php'>Atzera</a>
 
 <center>
 <table id="galdTaula" >

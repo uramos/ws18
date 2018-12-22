@@ -7,7 +7,23 @@ if(!isset($_SESSION['user'])){
 	
 }else{					
 
+?>
+<head>
+<style type="text/css">
+#main-header {
+	background: #333;
+	color: white;
+	height: 40px;
+	
+	width: 100%; 
+	left: 0; 
+	top: 0; 
+	position: fixed; 
+}
+</style>
+</head>
 
+<?php
 	include 'dbConfig.php';
 
 	$link = mysqli_connect($zerbitzaria, $erabiltzailea, $gakoa, $db);
@@ -20,6 +36,21 @@ if(!isset($_SESSION['user'])){
 
 	$ema = mysqli_query($link,$sql);
 
+?>
+<body>
+<body style="margin-top:50px">
+<header id='main-header' >
+
+     
+    <div id="navegador" role='navigation'>
+     
+       <a href='layoutLogeatua.php' style='color:white' >Atzera</a>
+        <center><?php echo $_SESSION['user'];?> 
+       </center>
+    </div>
+      
+</header>
+<?php
 	echo '<table border=1><tr><th> ID </th><th> EPOSTA </th><th> SARRERA GALDERA </th><th> SARRERA ZUZENA </th><th> 
 	SARRERA OKERRA 1 </th><th> SARRERA OKERRA 2 </th><th> SARRERA OKERRA 3 </th><th> GALDERA ZAILTASUNA </th><th> GALDERA GAIA </th><th> IRUDIA </th></tr>';
 
@@ -32,8 +63,9 @@ if(!isset($_SESSION['user'])){
 		}
 	echo '</table>';
 	mysqli_free_result($ema);
-	echo "<a href='layoutLogeatua.php'>Atzera</a>";
+
 	mysqli_close($link);
 	
 }
 ?> 
+</body>

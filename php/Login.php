@@ -7,39 +7,60 @@
 	if($link->connect_errno) {
 		die( "Huts egin du konexioak MySQL-ra: (". $link-> connect_errno .") " .$link-> connect_error);
 	}
+	
 	$usr_pass=$_POST['pasahitza'];
 	
-	$sql = ("select * from erabiltzaile where ePosta='$usr_email' and pass='$usr_pass'");
+
+ 
+	$sql = ("select * from erabiltzaile where ePosta='$usr_email'");
 	
 	$ema = mysqli_query($link,$sql);
 	
+
+	
+	
+	
 	if(!$ema){
 		die('Errorea query-a gauzatzerakoan: ' . mysqli_error($link));
-	}else{
+	}else{	
+	    
+
 		$rows_cnt = $ema->num_rows;
 		mysqli_close($link);
-		if($rows_cnt==1){
+		if($rows_cnt==1 ){
+		    
 		    
 		    $row = mysqli_fetch_array($ema,MYSQLI_ASSOC);
 		    
-		    if(!$row['Blokeatuta']){
-    			$rows_cnt=0;
-    			//sesioa hasieratu
-    			//session_start();
-    			$_SESSION['user']=$usr_email;
-                
-                if($usr_email == 'admin000@ehu.eus'){
-					$_SESSION['sessionmode']='admin';
-                    echo"<p>Special access granted<p> <a href='handlingAccounts.php'>Logeatu zara</a>";
-                }else{
-					$_SESSION['sessionmode']='user';
-    		    	echo"<p> Access granted<p> <script language='javascript'>window.location='handlingQuizesAJAX.php'</script>;";
-				}
-		    }else{
-		        	echo"<p><font color=#FF3300> ERABILTZAILE BLOKEATUA !</font><p>";
-		    }
+		    if(password_verify($usr_pass, $row['Pass'])){
+		    
+    		    if(!$row['Blokeatuta']){
+        			$rows_cnt=0;
+        			//sesioa hasieratu
+        			//session_start();
+        			$_SESSION['user']=$usr_email;
+        			
+        			//puntuazioak
+        			$_SESSION['score']=0;
+        			$_SESSION['maxscore']=$row['Score'];
+        			$_SESSION['galderaID']=0;
+        			
+                    
+                    if($usr_email == 'admin000@ehu.eus'){
+    					$_SESSION['sessionmode']='admin';
+                        echo"<p>Special access granted<p> <a href='layoutLogeatua.php'>Logeatu zara</a>";
+                    }else{
+    					$_SESSION['sessionmode']='user';
+        		    	echo"<p> Access granted<p> <script language='javascript'>window.location='layoutLogeatua.php'</script>;";
+    				}
+    		    }else{
+    		        	echo"<p><font color=#FF3300> ERABILTZAILE BLOKEATUA !</font><p>";
+    		    }
+    		}else{
+    		    	echo"<p><font color=#FF3300> Autentidfikazio errorea! Saiatu berriro</font><p>";
+    		}
 		}else{
-			echo"<p><font color=#FF3300> Autentidfikazio errorea! Saiatu berriro</font><p>";
+			echo"<p><font color=#FF3300> Erabiltzaile hori ez dago erregistratuta! Saiatu berriro</font><p>";
 		}
 	}
 }
@@ -52,6 +73,16 @@
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 </head>
 	
+<?php 
+				if(isset($_SESSION['user'])){
+					echo "ZERBITZU HONETARAKO BAIMENIK EZHEMEN?";
+					return false;
+				}//else if(isset($_SESSION['admin'])){
+				    
+				//}
+			
+?>
+
 <body>
 <h2> Erabiltzaileak Login egin</h2>
 	<form method="post" action="Login.php" id="erablogin" name="erablogin">
@@ -59,12 +90,10 @@
 			<legend>ID panela:</legend>
 			Email: <input type="email" id="posta" name="posta"  value="" size="30"/><p>
 			Password:  <input type="password" id="pasahitza" name="pasahitza" size="30"/><p>
-			<input type="submit" value="Login Egin" id="submita" name="submita"/></br>
+			<input type="submit" value="Login Egin" id="submita" name="submita"/>  <p> <a href='pasahitzaAhaztuta.php'>Pasahitza ahaztu duzu?</a></br>
 		</fieldset>
-		<?php
-		if(!isset($_SESSION['user']))
-		echo "<p> <a href='layout.php'>Atzera</a>";
-		?>
+        <p> <a href='layout.php'>Atzera</a>
+
 	</form>
 </body>
 </html>

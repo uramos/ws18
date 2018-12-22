@@ -13,7 +13,7 @@
 	<link rel="stylesheet" type="text/css" href="../styles/input.css" />
 	<link rel="stylesheet" type="text/css" href="../styles/botoia.css" />
 	<link rel="stylesheet" type="text/css" href="../styles/thumb.css" />
-	
+	<link rel='stylesheet' type='text/css' href='../styles/horbar.css' />
 </head>
 
 <?php 
@@ -24,10 +24,17 @@
 			
 ?>
 <body>
-
+	
+	     
+    <div align='left' id="navegador" role='navigation'>
+        <ul>
+        <li><?php echo $_SESSION['user'];?> </li>
+        </ul>
+    </div>
+    
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 <script>
-
+console.log(<?php $_SESSION['user'] ?>);
  $(document).ready(function(){
  
         //$.postaZuzena = function(){
@@ -80,7 +87,7 @@
 	<fieldset>
 		<legend>Galdera sortu:</legend>
 			<label for="posta">eMail(*):</label>
-			<input type="text" name="posta" id="posta" value="<?php echo $_GET['erab']?>"/>
+			<input type="text" name="posta" id="posta" value="<?php $_SESSION['user']?>"/>
 			<br/>
 			<label for="sarGaldera">Egin nahi den galdera(*):</label>
 			<input type="text" name="sarGaldera" pattern="[A-Za-z ,-?]{10,150}" class="sarrera" id="sarGaldera"/>
@@ -144,7 +151,39 @@
 			$sarOkerra3 = $_POST['sarOkerra3'];
 			$galderaZail = $_POST['galderaZail'];
 			$galderaGai = $_POST['galderaGai'];  
+			
+			/*
+			if($sarZuzena==$sarOkerra1 ||$sarZuzena==$sarOkerra2 ||$sarZuzena==$sarOkerra3 ||$sarOkerra1==$sarOkerra2 ||$sarOkerra1==$sarOkerra3 ||$sarOkerra2==$sarOkerra3 ){
+			    echo "REPEATEDANSERS";
+			    return false;
+			}
+			
+			$sqlc="select * from questions where sarZuzena=$sarZuzena and sarOkerra1=$sarOkerra1 sarOkerra2=$sarOkerra2 sarOkerra3=$sarOkerra3 galderaGai=$galderaGai";
+			$emac=mysqli_query($link,$sqlc);
+			
+        	while ($rowc = mysqli_fetch_array($emac,MYSQLI_ASSOC)){
+        	    if($row['sarGarldera']==$sarGaldera){
+        	        echo "REPEATEDQUESTION";
+        	        return false;
+        	    }
+        	}
+			*/
+			
+			$sqlc="select * from questions where salGaldera=$sarGaldera";
+			$emac=mysqli_query($link,$sqlc);
+			
+			$count = $emac->num_rows;
+			
+			
+			$erregistratua=mysqli_query($link, "SELECT * FROM questions WHERE sarGaldera='$sarGaldera'");
+        	if(mysqli_num_rows($erregistratua)>0)
+        	{
+        	    echo "REPEAT";
+        		return false;
+        	}
+	
 
+                   
 			//if (preg_match('/^[a-zA-Z]{3,20}[0-9]{3}@ikasle\.ehu\.eus$/',"$posta")) {
 			if(strlen(trim($sarGaldera))>10){
 				if(strlen(trim($sarZuzena))>0 and strlen(trim($sarOkerra1))>0 and strlen(trim($sarOkerra2))>0 and strlen(trim($sarOkerra3))>0 and strlen(trim($galderaGai))>0){
@@ -199,7 +238,7 @@
 			//}else{
 			  // echo "alert('Sartutako postak ez ditu baldintzak betetzen.');";
 			//}
-
+			
 			 
 			mysqli_close($link);
 

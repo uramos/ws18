@@ -35,6 +35,7 @@ if(isset($_SESSION['user'])){
     </header>
 	<nav class='main' id='n1' role='navigation'>
 		<span><a href='layout.php'>Home</a></span>
+		<!--<span><a href='pasahitzaAldatu.php'>Password Recovery</a></span>-->
 		<span><a href='../credits.html'>Credits</a></span>
 	</nav>    
 	<section class="main" id="s1">
